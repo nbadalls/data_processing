@@ -2,7 +2,7 @@
 from easydict import EasyDict as edict
 
 src_video_path = "/home/minivision/DataSet/Video/20230804_抽烟检测"
-dst_root_path = "/home/minivision/DataSet/Image/20230804_抽烟检测_T"
+dst_root_path = "/home/minivision/DataSet/Image/20230804_抽烟检测_T1"
 device_id = 0
 config = edict(
     log_file=f"{dst_root_path}/info.log",

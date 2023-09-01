@@ -1,12 +1,11 @@
 import argparse
 import json
 import importlib.util
-import config_file.eval.cls_roc_eval
 from module.logger_manager import get_root_logger
 from wrapper.acc_checker import WrapperEval
 from module.utility import make_if_not_exists
 from pathlib import Path
-
+import traceback
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -23,4 +22,8 @@ if __name__ == "__main__":
     logger.info(f"配置文件路径：{config_module.__file__}")
     logger.info(json.dumps(pipline_config, indent=4, ensure_ascii=False))
     wrapper = WrapperEval(pipline_config, logger)
-    wrapper.run_pipline()
+    try:
+        wrapper.run_pipline()
+    except Exception as e:
+        logger.error("An exception occurred: %s", str(e))
+        logger.error(traceback.format_exc())

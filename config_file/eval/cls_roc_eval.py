@@ -1,9 +1,11 @@
 # coding=utf-8
 from easydict import EasyDict as edict
 
-
+# 检测结果存放路径
 dst_root_path = "/home/minivision/DataSet/Eval/Smoke2"
+# 测试集目录前缀
 gt_root_path = ""
+# 测试集标签存放路径
 gt_path = "/home/minivision/DataSet/TestSet/smoke/TEST_20201211-smoke_7classes.txt"
 device = 0
 config = edict(

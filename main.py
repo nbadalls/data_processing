@@ -5,7 +5,7 @@ from pathlib import Path
 import json
 import argparse
 import importlib.util
-
+import traceback
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -22,6 +22,12 @@ if __name__ == "__main__":
     logger.info(f"配置文件路径：{args.config}")
     logger.info(json.dumps(pipline_config, indent=4, ensure_ascii=False))
     wrapper = Processor(pipline_config, logger)
-    wrapper.run_pipline()
+    try:
+        wrapper.run_pipline()
+    except Exception as e:
+        logger.error("An exception occurred: %s", str(e))
+        logger.error(traceback.format_exc())
+
+
 
 
