@@ -1,0 +1,43 @@
+from easydict import EasyDict as edict
+
+src_video_path = "/home/minivision/DataSet/Video/垃圾检测"
+dst_root_path = "/home/minivision/DataSet/Image/垃圾检测_2"
+device_id = 0
+config = edict(
+    log_file=f"{dst_root_path}/info_2.log",
+    video_param=edict(
+        type="VideoProcessBase",
+        video_path=src_video_path,
+        dst_img_path=f"{dst_root_path}/video_crop_image",
+        frequency=10,
+        pool_num=10
+    ),
+    det_param=edict(
+        model=edict(
+            type="YoloDet",
+            # model_path="/home/minivision/Model/CNN/20230203055406_Pedestrian_MS288-896_2023-0113-Pedestrian_ig0.5_iouv0.5-0.95_yolov5m_ep59-best_map.onnx",
+            model_path="/home/minivision/mount_directory/GPU_CLUSTER/model/Trash/select_model_yolo/20220218144154/Trash_640_2021-08-21-Trash-Aug09-15-SY-c6Neg_ig0.3-sz15_iouv0.4-0.95_masic1.0_s0.5_iou0.3N_SGDR_yolov5s_Feb16-16-21-09/20220216202849_Trash_640_2021-08-21-Trash-Aug09-15-SY-c6Neg_ig0.3-sz15_iouv0.4-0.95_masic1.0_s0.5_iou0.3N_SGDR_yolov5s_ep28-best_map.onnx",
+            nms_iou=0.3,
+            device_id=device_id,
+            thre=[0.5, 0.5, 0.5, 0.5],  # 对应多个类别的阈值，选取大于阈值的结果保存
+            annotation_dict=["bottle", "plastic", "box", "scrap"],
+        ),
+        loader=edict(
+            type="LoadImagesYolo",
+            preprocess=edict(
+                type="YoloProcess",
+                img_size=640,
+                rgb=False
+            ),
+        ),
+        batch_param=edict(
+            batch_size=64,
+            num_workers=10
+        ),
+      ),
+    crop_param=edict(
+        type="CropImage",
+        pool_num=10,
+        scale_w=1.0,
+        scale_h=1.0),
+    )
