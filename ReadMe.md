@@ -70,16 +70,16 @@ cls_param=edict(
         # Model1=======================================================
         edict(
             loader=edict(
-                type="LoadImageCls",         # 分类图片处理类名
+                type="LoadImageCls",                                  # 分类图片处理类名
                 preprocess=edict(
-                    type="SmokePhoneCrop",   # 数据预处理方法，在module/preprocess/cls_input.py中扩展定义
+                    type="SmokePhoneCrop",                            # 数据预处理方法，在module/preprocess/cls_input.py中扩展定义
                     width=224,
                     height=224,
-                    rgb=True)),              # True=rgb， False=bgr
+                    rgb=True)),                                       # True=rgb， False=bgr
             model=edict(
-                type="Classifier",           # 分类器类名，初始化相应的分类器类
+                type="Classifier",                                    # 分类器类名，初始化相应的分类器类
                 model_path="model_path1.onnx",
-                post_process="sigmoid",      # 后处理分类 "sigmoid", "softmax", 默认None不需要后处理操作
+                post_process="sigmoid",                               # 后处理分类 "sigmoid", "softmax", 默认None不需要后处理操作
                 device_id=0)
                 ),
 
@@ -99,8 +99,8 @@ cls_param=edict(
                 device_id=0))],
 
     batch_param=edict(
-        batch_size=64,                       # DataLoader的batch_size
-        num_workers=10),                     # 加载数据的线程数
+        batch_size=64,                                              # DataLoader的batch_size
+        num_workers=10),                                            # 加载数据的线程数
     mining_param=edict(
         thre=["0>0.5", "1>0.5", "2>0.5", "3>0.5", "4>0.5", "5>0.5", "6>0.5"],  # 根据类别Minig不同阈值下图片
         annotation_dict=["行人", "明显打电话", "明显玩手机", "明显抽烟", "不明显打电话", "不明显玩手机", "不明显抽烟"], # 每类代表的标签，若为None，默认使用类别的数字代替
@@ -114,24 +114,24 @@ cls_param=edict(
 ```python
 from easydict import EasyDict as edict  
 video_param=edict(
-    type="VideoProcessBase",                         # 视频处理类
+    type="VideoProcessBase",                                         # 视频处理类
     video_path="src_video_path",
     dst_img_path=f"dst_root_path/video_crop_image",
-    frequency=10,                                    # 每间隔多少帧截取一张图片
-    pool_num=10                                      # 处理视频的进程数
+    frequency=10,                                                    # 每间隔多少帧截取一张图片
+    pool_num=10                                                      # 处理视频的进程数
 ),
 ```
 
 
 #### ROI图片截取配置文件
 根据检测框的结果提取ROI图片，用于后续的分类操作
-```
+```python
 from easydict import EasyDict as edict  
 crop_param=edict(
-    type="CropImage",                                # ROI提取类               
-    pool_num=10,                                     # 截取进程数
-    scale_w=1.0,                                     # 扩边参数，宽变为原来的scale_w倍，
-    scale_h=1.0),                                    # 扩边参数，宽变为原来的scale_h倍，
+    type="CropImage",                                               # ROI提取类               
+    pool_num=10,                                                    # 截取进程数
+    scale_w=1.0,                                                    # 扩边参数，宽变为原来的scale_w倍，
+    scale_h=1.0),                                                   # 扩边参数，宽变为原来的scale_h倍，
 )
 ```
 
