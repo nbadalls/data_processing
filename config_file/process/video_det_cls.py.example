@@ -2,7 +2,7 @@
 from easydict import EasyDict as edict
 
 src_video_path = "/home/minivision/DataSet/Video/20230804_抽烟检测"
-dst_root_path = "/home/minivision/DataSet/Image/20230804_抽烟检测_T1"
+dst_root_path = "/home/minivision/DataSet/Image/20230804_抽烟检测_T3"
 device_id = 0
 config = edict(
     log_file=f"{dst_root_path}/info.log",
@@ -16,7 +16,7 @@ config = edict(
     det_param=edict(
         model=edict(
             type="YoloDet",
-            model_path="/home/minivision/Model/CNN/20230203055406_Pedestrian_MS288-896_2023-0113-Pedestrian_ig0.5_iouv0.5-0.95_yolov5m_ep59-best_map.onnx",
+            model_path="models/det/20230203055406_Pedestrian_MS288-896_2023-0113-Pedestrian_ig0.5_iouv0.5-0.95_yolov5m_ep59-best_map.onnx",
             device_id=device_id,
             thre=[0.5],  # 对应多个类别的阈值，选取大于阈值的结果保存
             annotation_dict=["行人"]
@@ -55,7 +55,7 @@ config = edict(
                 model=edict(
                     type="Classifier",
                     post_process="sigmoid",
-                    model_path="/home/minivision/Model/CNN/smoke/2023-07-04-02-20_SmokePhone-PyAMP-MultiLabel-DA_224x224_base_smoke-phone-train-20230703-org_smoke-phone-test-20230703-org_MobileNetV2-c7_model_iter-38554_smoke-0.6645_obsmoke-0.2435_224-224.onnx",
+                    model_path="models/cls/smoke/2023-07-04-02-20_SmokePhone-PyAMP-MultiLabel-DA_224x224_base_smoke-phone-train-20230703-org_smoke-phone-test-20230703-org_MobileNetV2-c7_model_iter-38554_smoke-0.6645_obsmoke-0.2435_224-224.onnx",
                     device_id=device_id)
             ),
 
@@ -71,7 +71,7 @@ config = edict(
                 model=edict(
                     type="Classifier",
                     post_process="sigmoid",
-                    model_path="/home/minivision/Model/CNN/smoke/2023-07-04-03-39_SmokePhone-PyAMP-MultiLabel-DA_384x384_base_smoke-phone-train-20230703-org_smoke-phone-test-20230703-org_MobileNetV2-c7_model_iter-52100_smoke-0.6645_obsmoke-0.2472_384-384.onnx",
+                    model_path="models/cls/smoke/2023-07-04-03-39_SmokePhone-PyAMP-MultiLabel-DA_384x384_base_smoke-phone-train-20230703-org_smoke-phone-test-20230703-org_MobileNetV2-c7_model_iter-52100_smoke-0.6645_obsmoke-0.2472_384-384.onnx",
                     device_id=device_id))],
 
         batch_param=edict(
