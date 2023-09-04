@@ -20,7 +20,8 @@
   │ ├── logger_manager.py  日志的管理
   │ ├── registry.py        注册器定义
   │ └── utility.py         通用函数的定义
-  ├── wrapper/  
+  ├── models/              保存模型的路径，仅支持onnx格式的模型进行推理
+  ├── wrapper/
   │ ├── acc_checker.py     串联模型精度校验的流程
   │ ├── base_pipline.py    pipline的基类，定义了检测和分类公用的推理部分
   │ └── processor.py       串联数据处理的流程
@@ -131,8 +132,7 @@ crop_param=edict(
     type="CropImage",                                               # ROI提取类               
     pool_num=10,                                                    # 截取进程数
     scale_w=1.0,                                                    # 扩边参数，宽变为原来的scale_w倍，
-    scale_h=1.0),                                                   # 扩边参数，宽变为原来的scale_h倍，
-)
+    scale_h=1.0)                                                  # 扩边参数，宽变为原来的scale_h倍，
 ```
 
 # 调用脚本
@@ -162,6 +162,10 @@ python main.py --config config/process/video_det_cls.py
   │  ├── video_crop_image_crop_sw_1.0_sh_1.0       根据图片标注截取ROI图片
   │  └── video_crop_image_det_pred.pkl             从视频中截取的图片标注的中间结果，如果存在则直接读取，不再重复检测
 </pre>
+
+
+# 注意
+1. onnxruntime-gpu需要同时安装对应的cuda和cudnn才能生效，详见：https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements
 
 
 
