@@ -1,6 +1,9 @@
 # coding=utf-8
 from easydict import EasyDict as edict
 
+# 分类支持标签格式
+# file_name.jpg 0 0 0 1
+
 # 检测结果存放路径
 dst_root_path = "/home/minivision/DataSet/Eval/Smoke2"
 # 测试集目录前缀

@@ -1,6 +1,10 @@
 # coding=utf-8
 from easydict import EasyDict as edict
 
+#  检测支持标签格式
+#  # prefix/image_name.jpg
+#  x1 y1 x2 y2 label x1 y1 x2 y2 label x1 y1 x2 y2 label
+
 dst_root_path = "/home/minivision/DataSet/Eval/Predestrain3"
 gt_root_path = "/home/minivision/mount_directory/GPU_CLUSTER/h3c_new/project_dataset"
 gt_path = "/home/minivision/mount_directory/GPU_CLUSTER/h3c_new/project_dataset/PedestrianData/Label/VideoStructure/行人汇总/20230217/20220419_行人测试集汇总.txt"
