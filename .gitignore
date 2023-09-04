@@ -8,6 +8,10 @@ config_file/*
 !config_file/process/video_det.py.example
 !config_file/process/video_det_cls.py.example
 
+models/*
+!models/cls/onnx_model
+!models/det/onnx_model
+
 
 script/*
 .idea/*
@@ -26,4 +30,5 @@ module/video/__pycache__
 __pycache__/
 *.py[cod]
 *$py.class
+
 
