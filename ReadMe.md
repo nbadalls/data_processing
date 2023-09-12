@@ -40,7 +40,7 @@ det_param=edict(
             model_path="model_path.onnx",
             nms_iou=0.3,                                             # 目标检测nms阶段的iou
             device_id=0,
-            thre=[0.5, 0.5, 0.5, 0.5],                               # 对应多个类别的阈值，选取大于阈值的结果保存
+            thre=[0.5, 0.5, 0.5, 0.5],                               # 对应多个类别的阈值，选取大于阈值的结果保存；如果阈值为单个float类型，则自动扩展到所有类别
             annotation_dict=["bottle", "plastic", "box", "scrap"],   # 对应多个类别对应的名称，对应预标注类名
         ),
         mining_param=edict(                                          # 若不配置此参数则不进行Mining      
