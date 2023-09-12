@@ -76,7 +76,7 @@ class Processor(PipBase):
             f.close()
 
         self.logger.info(f"一共{len(img_files)}张图片")
-        class_num = len(self.detector.thre)
+        class_num = self.detector.class_num
         rect_num = np.zeros(class_num)
         # 写入预标注文件
         for i in range(len(img_files)):
