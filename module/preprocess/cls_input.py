@@ -57,10 +57,10 @@ class SmokePhoneCrop(ImageBase):
                 new_h = (h_ * t0) // 10
                 img = img.crop((0 + offset_w, offset_h, width - offset_w, new_h))
             img = img.resize((self.width, self.height))
-            if not self.rgb:
-                img = img.convert("BGR")
             img = np.array(img)
             img = img.transpose((2, 0, 1))
+            if not self.rgb:
+                img = img[::-1]#BGR
             img = np.ascontiguousarray(img)
             img = img / 255.0
         return img
