@@ -4,6 +4,7 @@ import cv2
 import torch
 import numpy as np
 from module.builder import DETECTION_PREPROCESS
+from module.logger_manager import get_root_logger
 
 
 def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), auto=True,
@@ -45,21 +46,15 @@ class YoloProcess:
     def __init__(self, img_size, rgb=False):
         self.img_size = img_size
         self.rgb = rgb
+        self.logger = get_root_logger()
 
-    def load_image(self, image_path):
-        im = cv2.imread(image_path)  # BGR
-        if im is None:
-            self.logger.error(f"Image is None, {image_path}, {os.path.exists(image_path)}")
-        h0, w0 = im.shape[:2]  # orig hw
-        r = self.img_size / max(h0, w0)  # ratio
-        if r != 1:  # if sizes are not equal
-            im = cv2.resize(im, (int(w0 * r), int(h0 * r)),
-                            interpolation=cv2.INTER_AREA if r < 1 else cv2.INTER_LINEAR)
-        return im, (h0, w0), im.shape[:2]  # im, hw_original, hw_resized
-
-    def __call__(self, image_path):
+    def process(self, image_info):
+        """
+        :param image_info: 输入可以是图片路径，或者通过cv2读取的np.ndarray
+        :return:
+        """
         # Load image
-        img, (h0, w0), (h, w) = self.load_image(image_path)
+        img, (h0, w0), (h, w) = self.load_image(image_info)
 
         # Letterbox
         img, ratio, pad = letterbox(img, self.img_size, auto=False, scaleup=False)
@@ -72,5 +67,27 @@ class YoloProcess:
             img = img.transpose((2, 0, 1))  # HWC to CHW, BGR
         img = np.ascontiguousarray(img)
         img = img/255.0
+        return img, shapes
+
+    def load_image(self, image_info):
+        if isinstance(image_info, str):
+            im = cv2.imread(image_info)  # BGR
+        elif isinstance(image_info, np.ndarray):
+            im = image_info
+        else:
+            self.logger.error("image_path 数据类型必须是str或np.ndarray")
+            return None, None
+
+        if im is None:
+            self.logger.error(f"Image is None, {image_info}, {os.path.exists(image_info)}")
+        h0, w0 = im.shape[:2]  # orig hw
+        r = self.img_size / max(h0, w0)  # ratio
+        if r != 1:  # if sizes are not equal
+            im = cv2.resize(im, (int(w0 * r), int(h0 * r)),
+                            interpolation=cv2.INTER_AREA if r < 1 else cv2.INTER_LINEAR)
+        return im, (h0, w0), im.shape[:2]  # im, hw_original, hw_resized
+
+    def __call__(self, image_path):
+        img, shapes = self.process(image_path)
         return img, shapes
 

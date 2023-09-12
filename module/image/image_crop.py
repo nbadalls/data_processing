@@ -52,6 +52,32 @@ class CropImage:
         return crop_files
 
     @staticmethod
+    def process(image, rect_rets, scale_w, scale_h):
+        """
+        :param image: 通过cv2读取的图片
+        :param rect_rets:  检测目标的结果 [[x1,y1,x2,y2,conf,label], [x1,y1,x2,y2,conf,label]]
+        :param scale_w: w扩展为原来的多少倍
+        :param scale_h: h扩展为原来的多少倍
+        :return: 截取之后的图片集
+        """
+        img_h, img_w, _ = image.shape
+        xyxy, label = np.array(rect_rets)[:, :4], np.array(rect_rets)[:, 5]
+        w = xyxy[:, 2] - xyxy[:, 0]
+        h = xyxy[:, 3] - xyxy[:, 1]
+        deta_x, deta_y = (scale_w * w - w) // 2, (scale_h * h - h) // 2
+        deta_xy = np.stack((-deta_x, -deta_y, deta_x, deta_y), axis=-1)
+        xyxy += deta_xy
+        xyxy[:, :2] = np.maximum(xyxy[:, :2], np.array([0, 0]))
+        xyxy[:, 2:4] = np.minimum(xyxy[:, 2:4], np.array([img_w - 1, img_h - 1]))
+
+        collect_imgs = []
+        for i in range(xyxy.shape[0]):
+            bbox = xyxy[i, :4].astype(np.int)
+            img_crop = image[bbox[1]:bbox[3] + 1, bbox[0]:bbox[2] + 1]
+            collect_imgs.append(img_crop)
+        return collect_imgs
+
+    @staticmethod
     def cropper(args):
         # bbox
         image_crop_folder, image_path, rect_rets, logger, scale_w, scale_h = args
@@ -64,18 +90,9 @@ class CropImage:
                 logger.error(f"无法打开图片：\n{image_path}")
                 return 0
 
-            xyxy, label = np.array(rect_rets)[:, :4], np.array(rect_rets)[:, 5]
-            w = xyxy[:, 2] - xyxy[:, 0]
-            h = xyxy[:, 3] - xyxy[:, 1]
-            deta_x, deta_y = (scale_w*w-w)//2,  (scale_h*h-h)//2
-            deta_xy = np.stack((-deta_x, -deta_y, deta_x, deta_y), axis=-1)
-            xyxy += deta_xy
-            xyxy[:, :2] = np.maximum(xyxy[:, :2], np.array([0, 0]))
-            xyxy[:, 2:4] = np.minimum(xyxy[:, 2:4], np.array([img_w-1, img_h-1]))
-
-            for i in range(xyxy.shape[0]):
-                bbox = xyxy[i, :4].astype(np.int)
-                img_crop = img[bbox[1]:bbox[3]+1, bbox[0]:bbox[2]+1]
+            label = np.array(rect_rets)[:, 5]
+            collect_imgs = CropImage.process(img, rect_rets, scale_w, scale_h)
+            for i, img_crop in enumerate(collect_imgs):
                 crop_img_name = f"{image_name}_{str(i).zfill(2)}_l-{int(label[i])}.jpg"
                 crop_img_path = f"{image_crop_folder}/{crop_img_name}"
                 crop_files.append(crop_img_path)
