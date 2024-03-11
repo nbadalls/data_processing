@@ -78,3 +78,40 @@ class SmokePhoneCrop(ImageBase):
         img = self.process(img)
         return img
 
+
+@CLASSIFIER_PREPROCESS.register_module
+class ImageRatioCrop:
+    def __init__(self, img_hw_ratio, h_top_crop, h_bottom_crop, w_left_crop, w_right_crop):
+        self.img_hw_ratio = img_hw_ratio
+        self.h_top = h_top_crop
+        self.h_bottom = h_bottom_crop
+        self.w_left = w_left_crop
+        self.w_right = w_right_crop
+
+    def process(self, image, bbox=None):
+        if bbox is None:
+            src_x1, src_y1, src_x2, src_y2 = 0, 0, image.shape[1]-1, image.shape[0]-1
+        else:
+            src_x1, src_y1, src_x2, src_y2 = bbox
+        img_h, img_w = image.shape[0], image.shape[1]
+        bbox_w, bbox_h = src_x2 - src_x1, src_y2 - src_y1
+        ratio = bbox_h / bbox_w
+        diff = ratio - np.array(self.img_hw_ratio)
+        if max(diff) >= 0:
+            i = np.argmin(diff[np.where(diff >= 0)])
+            x1 = src_x1 + int(bbox_w * self.w_left[i])
+            y1 = src_y1 + int(bbox_h * self.h_top[i])
+            x2 = src_x2 - int(bbox_w * self.w_right[i])
+            y2 = src_y2 - int(bbox_h * self.h_bottom[i])
+
+            x1, y1, x2, y2 = max(x1, 0), max(y1, 0), min(x2, img_w - 1), min(y2, img_h - 1)
+            crop_img = image[y1:y2 + 1, x1:x2 + 1]
+        else:
+            crop_img = image[src_y1:src_y2 + 1, src_x1:src_x2 + 1]
+        return crop_img
+
+    def __call__(self, img_path):
+        img = cv2.imread(img_path)
+        img = self.process(img)
+        return img
+
